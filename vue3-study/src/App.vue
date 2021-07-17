@@ -1,25 +1,37 @@
 <template>
   <div class="name">
-    <!-- 2. greeting이라는 함수를 통해 'Hello'라는 문자열 넣어보기 -->
-    <!-- 함수로 접근을 할 때에는 함수명 뒤에 ()를 적어줘야 한다. -->
-    {{ greeting() }}
+    {{ name }}
   </div>
+  <!-- 1-4. click 이벤트 시 updateName함수가 실행되도록 한다. -->
+  <button
+    class="btn btn-primary"
+    @click="updateName"
+  >
+    Click
+  </button>
 </template>
 
 <script>
+// 1. vue 패키지에서 reactive를 불러온다.
+import { ref } from 'vue';
+
 export default {
   setup() {
-    const name = "Junsung";
-    // 1. 함수 정의하기
-    // 1-1. setup 함수 내에 greeting이라는 이름의 화살표 함수를 만든다.
-    const greeting = () => {
-      // 1-2. greeting 함수에서 'Hello'라는 값을 return해준다.
-      return 'Hello';
-    }
+    // 1-1. 재할당이 불가능한 const 변수선언으로 name을 선언하고 오브젝트를 reactive안에 담아준다.
+    const name = ref({
+      id: 1
+    })
+    
+    // 1-2. .value.id로 ref를 사용하고도 오브젝트에 접근이 가능하다.
+    const updateName = () => {
+      name.value.id = 2;
+      console.log(name)
+    };
+
+    // 1-3. updateName함수 return
     return {
       name,
-      // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
-      greeting,
+      updateName,
     };
   }
 }

@@ -24,11 +24,11 @@ CLI를 이용하여 설치를 진행해보자.
 
 5. 터미널에서 `vue -V` 또는 `vue --version` 을 통해 vue CLI 설치여부 및 버젼을 확인.
 
-   * 여기서 본인은 commend not found 에러메세지가 떴다.
+   * 여기서 본인은 command not found 에러메세지가 떴다.
    * 원인은 아마 path라는 환경변수에서 vue가 설치되어있는 경로가 없거나 잘못 지정되었기 때문이라고 생각했다.(vue 실행오류의 주범)
      * 환경변수란?
        * 프로세서가 컴퓨터에서 동작하는 방식에 영향을 미치는 동적인 값들의 모임이다.
-       * 환경 변수 중 하나인 path변수는 운영체제가 어떤 프로세스를 실행시킬때, 그 경로를 찾는데 이용도니다.
+       * 환경 변수 중 하나인 path변수는 운영체제가 어떤 프로세스를 실행시킬때, 그 경로를 찾는데 이용된다.
        * 따라서, 환경변수설정을 제대로 해주지 않으면 프레임워크가 제대로 동작하지 않을 수 있다.
    * 일단 환경변수를 추가하기 위해서는 vue가 설치된 경로를 알아야 하는데 99%확률로 다음과 같은 경로상에 있다.
      * C:\Users\사용자이름\AppData\Roaming\npm\node_modules\@vue\cli\bin
@@ -207,12 +207,14 @@ CLI를 이용하여 설치를 진행해보자.
 
 * script에 선언 후 template에서 사용해보자.(composition API를 사용할 것이다.)(+ CSS 스타일링 포함)
 
-  * composition API
+  * composition API란?
 
     * 구성 요소 논리를 유연하게 구성할 수 있는 추가 기능 기반 API이며, Vue 3.0 에서 새로 추가된 함수 기반의 API이다.
     * 기존에 사용하던 Options API를 사용해서 논리구조를 분리하고 재사용을 가능하도록 하는 것을 목적으로 만들어졌다.
     * 기존에도 mixin 기능을 활용하면 코드를 재사용 할 수 있었지만, 오버라이딩 문제나 여러가지 mixin을 상속받을 경우 컴포넌트를 관리하기가 조금 까다로워지는 등 아쉬움이 있어 이러한 단점을 보완하기 위해 Composition API를 사용한다.
-
+    * setup 훅(hook) 이란?
+      * composition API를 사용하기 위한 진입점 즉, 초기화 지점이다.
+    
     ```vue
     <template>
       <!-- 1-4. template내에서 변수에 접근하려면 다음과 같은 방식으로 접근해야 한다. -->
@@ -224,7 +226,7 @@ CLI를 이용하여 설치를 진행해보자.
     
     <script>
     // 1. composition API 사용
-    // 1-1 export default 내에 setup 함수를 만들고 그 안에서 필요한 로직을 작성
+    // 1-1 export default 내에 setup 훅(hook)을 만들고 그 안에서 필요한 로직을 작성
     export default {
       setup() {
         // 1-2. 변수 등록
@@ -257,46 +259,409 @@ CLI를 이용하여 설치를 진행해보자.
 
 
 
-### 함수 정의 및 사용
+### Composition API에서의 함수 정의 및 사용
 
 greeting이라는 함수를 한번 만들어보자
 
-```vue
-<template>
-  <div class="name">
-    <!-- 2. greeting이라는 함수를 통해 'Hello'라는 문자열 넣어보기 -->
-    <!-- 함수로 접근을 할 때에는 함수명 뒤에 ()를 적어줘야 한다. -->
-    {{ greeting() }}
-  </div>
-</template>
+* 기본
 
-<script>
-export default {
-  setup() {
-    const name = "Junsung";
-    // 1. 함수 정의하기
-    // 1-1. setup 함수 내에 greeting이라는 이름의 화살표 함수를 만든다.
-    const greeting = () => {
-      // 1-2. greeting 함수에서 'Hello'라는 값을 return해준다.
-      return 'Hello';
+  ```vue
+  <template>
+    <div class="name">
+      <!-- 2. greeting이라는 함수를 통해 'Hello'라는 문자열 넣어보기 -->
+      <!-- 함수로 접근을 할 때에는 함수명 뒤에 ()를 적어줘야 한다. -->
+      {{ greeting() }}
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    setup() {
+      const name = "Junsung";
+      // 1. 함수 정의하기
+      // 1-1. setup 훅(hook) 내에 greeting이라는 이름의 화살표 함수를 만든다.
+      const greeting = () => {
+        // 1-2. greeting 함수에서 'Hello'라는 값을 return해준다.
+        return 'Hello';
+      }
+      return {
+        name,
+        // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
+        greeting,
+      };
     }
-    return {
-      name,
-      // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
-      greeting,
-    };
   }
-}
-</script>
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
 
-<style>
-  .name {
-    color: red;
-  }
-</style>
-```
+  
 
-서버를 실행시켜보면 다음과 같이 Hello를 출력하고 있음을 확인할 수 있다.
+  서버를 실행시켜보면 다음과 같이 Hello를 출력하고 있음을 확인할 수 있다.
 
 ![1](https://user-images.githubusercontent.com/77382646/126033279-c448a07f-c3c6-41a4-9ced-8957dfb84074.PNG)
+
+* 함수에서 매개변수를 받아서 그 매개변수를 함수안에서 사용할 수도 있다.
+
+  ```vue
+  <template>
+    <div class="name">
+      <!-- 인자==값 -->
+      <!-- 1-4. 인자(name)를 함수로 넘겨준다. -->
+      {{ greeting(name) }}
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    setup() {
+      const name = "Junsung";
+      // 1. 함수에서 매개변수를 받아서 그 매개변수를 함수안에서 사용할 수 있다.
+      // 1-1. greeting에서 name이라는 매개변수를 받는다.
+      const greeting = (name) => {
+        // 1-2. greeting 함수에서 'Hello, ' + 변수name을 return해준다.
+        return 'Hello, ' + name;
+      }
+      return {
+        name,
+        // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
+        greeting,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  서버를 실행시켜보면 다음과 같이 Hello Junsung을 출력하고 있음을 확인할 수 있다.
+
+  ![1](https://user-images.githubusercontent.com/77382646/126033606-83edd9e7-3845-4c36-b38c-7162d51dbf40.PNG)
+
+* 정의된 함수를 변수에 저장해서 사용할 수도 있다.
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ greet }}
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    setup() {
+      const name = "Junsung";
+  
+      const greeting = (name) => {
+        return 'Hello, ' + name;
+      };
+  
+      const greet = greeting(name);
+      return {
+        greet,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+
+
+### event
+
+* `v-on`디렉티브를 사용하여 DOM(Document Object Model) 이벤트를 듣고 트리거 될 때 JavaScript를 실행할 수 있다.
+  * `v-on:`은  약어로 `@`이다.
+
+* ex1) 버튼을 클릭 시 브라우저 콘솔창에 'hello world'를 출력하는 이벤트를 만들어보자.
+
+  ```vue
+  <template>
+    <!-- 버튼의스타일을 꾸미기 위해 bootstrap CDN을 설치하였다. -->
+    <!-- 1. 버튼추가 -->
+    <!-- 1-1. button 태그의 속성을 v-on 디렉티브로 정해주고 click이벤트를 걸어준다.  -->
+    <!-- 1-4. click이벤트시 실행할 함수로 return 된 consoleLog 함수를 걸어준다. -->
+    <button
+      class="btn btn-primary"
+      @click="consoleLog"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  export default {
+    setup() {
+      
+      // 1-2. 브라우저 콘솔창에 'hello world'를 출력하는 함수작성
+      const consoleLog = () => {
+        console.log('hello world');
+      };
+  
+      // 1-3. consoleLog 함수 return
+      return {
+        consoleLog,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  다음과 같이 버튼을 클릭시 브라우저 콘솔창에서 'hello world'가 성공적으로 출력됨을 확인할 수 있다.
+
+  ![1](https://user-images.githubusercontent.com/77382646/126035079-5ae5f502-62f9-4e04-9dc5-a897d66323eb.PNG)
+
+* ex2) 버튼을 클릭 시 브라우저에서 출력되고있는 'hell world'를 'hello world'로 바꿔보자.
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ name }}
+    </div>
+    <!-- 1-3. 클릭이벤트에 updateName함수를 실행하도록 하였다. -->
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  export default {
+    setup() {
+      // 1. 변수에 할당된 값을 변경해야 하므로 재할당이 가능한 변수선언방식인 let을 사용한다.
+      let name = 'hell world'
+      
+      // 1-1. name변수에 할당된 값을 'hello world'로 재할당 시켜주는 updateName함수 작성
+      // 콘솔창에서 변경점을 확인할 수 있도록 한다.
+      const updateName = () => {
+        name = 'hello world';
+        console.log(name)
+      };
+  
+      // 1-2. updateName함수 return
+      return {
+        name,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  다음과 같이 버튼을 클릭 시 브라우저 콘솔창에서만 'hello world'가 뜨고 브라우저에서는 'hell world'가 뜨는것으로 미루어보아 클릭이벤트는 제대로 작동하여 name에 할당된 값은 바뀌었지만 template에는 적용되지 않은것을 확인할 수 있다.
+
+  ![1](https://user-images.githubusercontent.com/77382646/126037634-d5dfcd7a-8551-44ab-9ed9-e2cd2d740557.png)
+
+
+
+### ref
+
+* vue.js composition API를 사용하면 일반 변수를 사용하여 template에 나타내고 있는 값은 나중에 재할당 하여도 template에 적용되지 않는다(변수에는 적용됨).
+
+* 따라서 vue.js에서는 변수값을 재할당 하였을 시 template에도 적용이 되도록하는 ref 기능을 제공한다.
+
+  * 단, 일반 변수에 값을 담으면 안되고 ref를 사용하여 변수에 값을 담아줘야 template에 적용된다.
+
+* 기존 뷰 버전에서는 `ref`가 뷰 템플릿의 DOM 또는 컴포넌트를 가리키는 속성으로 사용되었으나, Vue 3 에서는 `ref`가 `reactive reference`를 의미한다.
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ name }}
+    </div>
+    <!-- 1-4. click 이벤트 시 updateName함수가 실행되도록 한다. -->
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  // 1. vue 패키지에서 ref를 불러온다.
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      // 1-1. 재할당이 불가능한 const 변수선언으로 name을 선언하고 값을 ref안에 담아준다.
+      const name = ref('hell world')
+      
+  
+      const updateName = () => {
+        // 1-2. 변수 선언 시 ref를 사용했다면 변수 값을 재할당 시 .value로 변수값에 접근해야 한다.
+        // updateName 함수가 실행되면 'hello world'가 name.value에 업데이트 되면서 template에도 같이 업데이트가 된다.
+        // 이렇게 data가 변경이 될 시 template에도 같이 data가 변경이 되는것을 'reactive하다' 라고 한다.
+        // 문자열, 숫자형 같은 기본 자료형은 반드시 ref를 사용해야 reactive하게 사용할 수 있다.
+        // ref 안에는 기본자료형 뿐만 아니라, 오브젝트, 배열도 사용할 수 있다.
+        // reactive를 사용하면 오브젝트, 배열에 한해서 .value를 사용하지 않고 변수값에 접근할 수 있다.
+        name.value = 'hello world';
+        console.log(name)
+      };
+  
+      // 1-3. updateName함수 return
+      return {
+        name,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  다음과 같이 버튼을 클릭시 브라우저에서 'hell world'가 'hello world'로 성공적으로 변경됨을 확인할 수 있다.
+
+  ![1](https://user-images.githubusercontent.com/77382646/126037523-106091ed-ed56-4071-9e65-cfa388e6c3c2.PNG)
+
+* ref를 사용해서 오브젝트, 또는 배열에 접근하기
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ name }}
+    </div>
+    <!-- 1-4. click 이벤트 시 updateName함수가 실행되도록 한다. -->
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  // 1. vue 패키지에서 reactive를 불러온다.
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      // 1-1. 재할당이 불가능한 const 변수선언으로 name을 선언하고 오브젝트를 reactive안에 담아준다.
+      const name = ref({
+        id: 1
+      })
+      
+      // 1-2. .value.id로 ref를 사용하고도 오브젝트에 접근이 가능하다.
+      const updateName = () => {
+        name.value.id = 2;
+        console.log(name)
+      };
+  
+      // 1-3. updateName함수 return
+      return {
+        name,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  
+
+
+
+### reactive
+
+* reactive를 사용하면 오브젝트, 배열에 한해서 .value를 사용하지 않고 변수값에 접근할 수 있다.
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ name }}
+    </div>
+    <!-- 1-4. click 이벤트 시 updateName함수가 실행되도록 한다. -->
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  // 1. vue 패키지에서 reactive를 불러온다.
+  import { reactive } from 'vue';
+  
+  export default {
+    setup() {
+      // 1-1. 재할당이 불가능한 const 변수선언으로 name을 선언하고 오브젝트를 reactive안에 담아준다.
+      const name = reactive({
+        id: 1
+      })
+      
+      // 1-2. .value 대신 .id로 오브젝트에 바로 접근이 가능하다.
+      const updateName = () => {
+        name.id = 2;
+        console.log(name)
+      };
+  
+      // 1-3. updateName함수 return
+      return {
+        name,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  다음과 같이 버튼을 클릭 시 id 값이 바뀌는 것을 확인할 수 있다.
+
+  ![1](https://user-images.githubusercontent.com/77382646/126039451-b3938664-7f4f-4ee4-96a7-18dc76c1fba2.png)
+
+  ![2](https://user-images.githubusercontent.com/77382646/126039468-d1cc1b52-990f-4830-a404-48d53255512f.PNG)
+
+### reactive vs ref
+
+링크: https://joshua1988.github.io/vue-camp/vue3.html#reactive%EA%B0%80-%EB%8D%94-%EC%84%A0%EC%96%B8%ED%95%98%EA%B8%B0-%ED%8E%B8%ED%95%9C-%EA%B2%83-%EA%B0%99%EC%9D%80%EB%8D%B0%EC%9A%94
+
+
+
+### 데이터 바인딩
 
