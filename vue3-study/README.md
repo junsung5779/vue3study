@@ -247,3 +247,56 @@ CLI를 이용하여 설치를 진행해보자.
     </style>
     ```
 
+
+
+### Vue 3 Fragments
+
+* Vue 3에서 컴포넌트는 다중 루트 노드(multi-root nodes) 컴포넌트인 fragments를 공식 지원한다.
+  * 링크 : https://v3.ko.vuejs.org/guide/migration/fragments.html#_2-x-%E1%84%80%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB
+* 결론 : template 내에서 여러개의 컴포넌트들을 하나의 단일 div 태그로 감싸지 않아도 됨.
+
+
+
+### 함수 정의 및 사용
+
+greeting이라는 함수를 한번 만들어보자
+
+```vue
+<template>
+  <div class="name">
+    <!-- 2. greeting이라는 함수를 통해 'Hello'라는 문자열 넣어보기 -->
+    <!-- 함수로 접근을 할 때에는 함수명 뒤에 ()를 적어줘야 한다. -->
+    {{ greeting() }}
+  </div>
+</template>
+
+<script>
+export default {
+  setup() {
+    const name = "Junsung";
+    // 1. 함수 정의하기
+    // 1-1. setup 함수 내에 greeting이라는 이름의 화살표 함수를 만든다.
+    const greeting = () => {
+      // 1-2. greeting 함수에서 'Hello'라는 값을 return해준다.
+      return 'Hello';
+    }
+    return {
+      name,
+      // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
+      greeting,
+    };
+  }
+}
+</script>
+
+<style>
+  .name {
+    color: red;
+  }
+</style>
+```
+
+서버를 실행시켜보면 다음과 같이 Hello를 출력하고 있음을 확인할 수 있다.
+
+![image-20210717184937697](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20210717184937697.png)
+
