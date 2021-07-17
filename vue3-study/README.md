@@ -1,6 +1,6 @@
 # vue3study
 
-## vue3 설치d
+## vue3 설치
 
 공식 사이트 : https://v3.vuejs.org/
 
@@ -187,7 +187,64 @@ CLI를 이용하여 설치를 진행해보자.
         </template>
         ```
       
-        F12를 눌러 개발자 도구를 활성화 한 다음 Elements를 보면 id가 app인 div태그 내에 내가 작성한 div태그가 들어가있는 모습을 볼 수 있다.
+        웹 브라우저에서 F12를 눌러 개발자 도구를 활성화 한 다음 Elements를 보면 id가 app인 div태그 내에 내가 작성한 div태그가 들어가있는 모습을 볼 수 있다.
     
     
+
+### vue component란?
+
+* 이름에서도 알 수 있듯이 하나의 부품(component)이다.
+* component파일을 만들면 확장자가 vue가 된다.
+
+#### vue component구성
+
+* vue component는 세 부분으로 나눠진다.
+  1. template
+     * html 코드가 들어간다.
+  2. script
+     * 자바스크립트 로직이 들어간다
+  3. style
+     * CSS 코드가 들어간다
+
+* script에 선언 후 template에서 사용해보자.(composition API를 사용할 것이다.)(+ CSS 스타일링 포함)
+
+  * composition API
+
+    * 구성 요소 논리를 유연하게 구성할 수 있는 추가 기능 기반 API이며, Vue 3.0 에서 새로 추가된 함수 기반의 API이다.
+    * 기존에 사용하던 Options API를 사용해서 논리구조를 분리하고 재사용을 가능하도록 하는 것을 목적으로 만들어졌다.
+    * 기존에도 mixin 기능을 활용하면 코드를 재사용 할 수 있었지만, 오버라이딩 문제나 여러가지 mixin을 상속받을 경우 컴포넌트를 관리하기가 조금 까다로워지는 등 아쉬움이 있어 이러한 단점을 보완하기 위해 Composition API를 사용한다.
+
+    ```vue
+    <template>
+      <!-- 1-4. template내에서 변수에 접근하려면 다음과 같은 방식으로 접근해야 한다. -->
+      <!-- {{ 변수명 }} -->
+      <!-- 2. style 안에 CSS 코드를 넣어서 글자색을 red로 바꿔보자. -->
+      <!-- 2-1. div 태그에 클래스명을 설정해주고 -->
+      <div class="name">{{ name }}</div>
+    </template>
+    
+    <script>
+    // 1. composition API 사용
+    // 1-1 export default 내에 setup 함수를 만들고 그 안에서 필요한 로직을 작성
+    export default {
+      setup() {
+        // 1-2. 변수 등록
+        const name = "Junsung";
+        // setup 함수 내에서 object를 return한다.
+        // 1-3. 사용하고자 하는 변수를 return해주면 template내에서 변수에 접근이 가능해진다.
+        return {
+          name
+        };
+      }
+    }
+    </script>
+    
+    <style>
+    /* 2-2. '.클래스명{}' 으로 클래스를 호출해주고 색상 설정. */
+    /* 웹 브라우저에서 클래스명이 name인 div 태그안의 내용들의 색상이 빨간색으로 변경된 것을 확인할 수 있다. */
+      .name {
+        color: red;
+      }
+    </style>
+    ```
 
