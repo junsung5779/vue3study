@@ -261,7 +261,7 @@ CLI를 이용하여 설치를 진행해보자.
 
 ### Composition API에서의 함수 정의 및 사용
 
-greeting이라는 함수를 한번 만들어보자
+'Hello'문자열을 반환하는 greeting이라는 함수를 한번 만들어보자
 
 * 기본
 
