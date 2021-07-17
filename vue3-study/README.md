@@ -1,6 +1,6 @@
 # vue3study
 
-## vue3 설치dd
+## vue3 설치
 
 공식 사이트 : https://v3.vuejs.org/
 
