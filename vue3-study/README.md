@@ -167,18 +167,17 @@ CLI를 이용하여 설치를 진행해보자.
             ```json
               "scripts": {
                 "serve": "vue-cli-service serve",
-                // build는 production에 올리기 전에 production에 올리기에 최적화 된 파일을 만드는 과정이다.
                 "build": "vue-cli-service build",
                 "lint": "vue-cli-service lint"
               },
             ```
-
+            
             이 말인 즉슨, 개발서버를 실행시키기 위해서는 "serve"를 사용해야 한다는 것이다.
-
+            
             터미널에서 `npm run serve` 명령어로 개발서버를 실행시킬수 있다.
             
             (build는 production에 올리기 전에 production에 올리기에 최적화 된 파일을 만드는 과정이다.)
-      
+        
       * App.vue 컴포넌트 내의 코드를 다 지우고 다음과 같이 작성한 후 서버를 실행시켜보자.
       
         ```vue
