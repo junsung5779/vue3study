@@ -385,8 +385,9 @@ CLI를 이용하여 설치를 진행해보자.
 ### event
 
 * `v-on`디렉티브를 사용하여 DOM(Document Object Model) 이벤트를 듣고 트리거 될 때 JavaScript를 실행할 수 있다.
+  
   * `v-on:`은  약어로 `@`이다.
-
+  
 * ex1) 버튼을 클릭 시 브라우저 콘솔창에 'hello world'를 출력하는 이벤트를 만들어보자.
 
   ```vue
@@ -665,6 +666,8 @@ CLI를 이용하여 설치를 진행해보자.
 
 ### 데이터 바인딩(Data binding)
 
+* 공식문서 : https://kr.vuejs.org/v2/guide/forms.html
+
 * 데이터 바인딩 이란 두 데이터 혹은 정보의 소스를 모두 일치시키는 기법이다.
 * 화면에 보이는 데이터와 브라우저 메모리에 있는 데이터를 일치시키는 기법이다.
 * `v-bind:`은  약어로 `:`이다.
@@ -843,3 +846,134 @@ export default {
 
   ![image-20210718165111897](README.assets/image-20210718165111897.png)
 
+
+
+### 양방향 바인딩
+
+* 양방향 바인딩에 대해 제대로 이해하려면 다음과 같은 내용에 대해 이해하고 있는것이 좋다.
+  * 프로퍼티 바인딩 : https://angular.kr/guide/property-binding
+  * 이벤트 바인딩 : https://angular.kr/guide/event-binding
+  * 입출력 프로퍼티 : https://angular.kr/guide/inputs-outputs
+* 양방향 바인딩은 프로퍼티 바인딩과 이벤트 바인딩이 결합된 것이다.
+  * 엘리먼트 프로퍼티의 값을 지정하기 위해 프로퍼티 바인딩이 사용된다.
+  * 엘리먼트가 변경된 것을 감지하기 위해 이벤트 바인딩이 사용된다.
+
+* 한마디로 요약하자면, `Vue 인스턴스` **⇄** `Template` 과 같이 두 방향 모두 데이터에 접근 할 수 있도록 하는 것을 양방향 데이터 바인딩 이라고 한다.
+
+* vue.js에서 양방향 데이터 바인딩을 가능하게 해주는 디렉티브가 바로 `v-model` 이다.
+
+* 만약 `v-model`을 사용하지 않으면!!!!! 이렇게나 어렵게 양방향 바인딩을 해야한다... ㅠㅠ
+
+  ```vue
+  <template>
+    <!-- javascript Event 중에 oninput이라는 이벤트가 있다. -->
+    <!-- @input="updateName" : 사용자가 input 박스에 값을 입력 시 oninput이벤트를 실행하여 "updateName" 함수 실행 -->
+    <input 
+      type="text"
+      :value="name"
+      @input="updateName"
+    >
+    <!-- javascript Event 중에 onclick이라는 이벤트가 있다. -->
+    <!-- @click="onSubmit" : 클릭 감지 시 onclick이벤트를 실행하여 "onSubmit" 함수 실행 -->
+    <button
+      class="btn btn-primary"
+      @click="onSubmit"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      const name = ref('junsung')
+      // 함수 onSubmit 실행 시 브라우저 콘솔창에 name에 할당된 값을 출력
+      const onSubmit = () => {
+        console.log(name.value)
+      };
+  
+      // 함수 updateName 실행 시 input 박스에 대한 정보들을 가지고 있는 e(event)라는 객체를 받아온다.
+      const updateName = (e) => {
+        // event라는 객체를 브라우저 콘솔창에 출력해보면 input Event 객체가 브라우저 콘솔창에 출력된다..
+        // console.log(e)
+        // e.target.value 과 같은 방식으로 해당 input Event객체에 있는 value에 접근이 가능하다.
+        console.log(e.target.value)
+      };
+  
+      return {
+        name,
+        onSubmit,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  서버를 실행시켜 'junsung'값을 기본으로 가지고 있던 input 박스에 추가로 1,2,3을 차례대로 작성해보았더니 매 번 값이 바뀔때마다 성공적으로 해당 값을 브라우저 콘솔창에 출력하는 모습을 확인할 수 있었다.
+
+  ![1](README.assets/126071239-7a4c6195-7ac1-484c-bdd1-f3d9f63558c0.JPG)
+
+  다음과 같이 input Event 객체에 있는 value를 name에 재할당만 시켜놓으면 click시 최종적으로 input 박스에 있는 값을 브라우저 콘솔창에 출력시킬수도 있다.
+
+  ![1](README.assets/126071513-4f8c3963-063f-4d00-ac77-0dab0e9d3092.JPG)
+
+* `v-model`을 사용해보자.
+
+  ```vue
+  <template>
+    <!-- 다음과 같이 v-model="name" 작성을 통해 쉽고 간편하게 양방향 바인딩이 가능하다. -->
+    <input 
+      type="text"
+      v-model="name"
+    >
+  
+    <button
+      class="btn btn-primary"
+      @click="onSubmit"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      const name = ref('junsung')
+      // 함수 onSubmit 실행 시 브라우저 콘솔창에 name에 할당된 값을 출력
+      const onSubmit = () => {
+        console.log(name.value)
+      };
+  
+      return {
+        name,
+        onSubmit,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  다음과 같이 `v-model`을 사용함으로써 value 바인딩을 해주고 script의 변수에 저장된 값까지 같이 업데이트 해줌을 알 수 있다.
+
+  ![1](README.assets/126071811-644cb881-6c53-481d-8296-eb70d9d68534.JPG)
+
+
+
+### 다음에 할 것: ???
