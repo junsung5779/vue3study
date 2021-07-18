@@ -1,8 +1,10 @@
 <template>
-  <div class="name">
+  <!-- 1-3. class와 바인딩 -->
+  <div v-bind:class="nameClass">
     {{ name }}
   </div>
-  <!-- 1-4. click 이벤트 시 updateName함수가 실행되도록 한다. -->
+
+  <input v-bind:type="tmp1" v-bind:value="name">
   <button
     class="btn btn-primary"
     @click="updateName"
@@ -12,32 +14,34 @@
 </template>
 
 <script>
-// 1. vue 패키지에서 reactive를 불러온다.
+
 import { ref } from 'vue';
 
 export default {
   setup() {
-    // 1-1. 재할당이 불가능한 const 변수선언으로 name을 선언하고 오브젝트를 reactive안에 담아준다.
-    const name = ref({
-      id: 1
-    })
+    const name = ref('junsung')
+    const tmp1 = ref('number')
+    // 1. class 바인딩 하기
+    // 1-1. class와 바인딩 할 변수 nameClass 선언
+    const nameClass = ref('aaa')
     
-    // 1-2. .value.id로 ref를 사용하고도 오브젝트에 접근이 가능하다.
     const updateName = () => {
-      name.value.id = 2;
-      console.log(name)
+      name.value = 'junsung1';
+      tmp1.value = 'text'
     };
-
-    // 1-3. updateName함수 return
+    // 1-2. 변수 nameClass return
     return {
       name,
+      tmp1,
       updateName,
+      nameClass,
     };
   }
 }
 </script>
 
 <style>
+  /* 'name'값을 가지고 있는 변수 nameClass가 클래스에 바인딩이 되어있기 때문에 결국 클래스명은 'name'이 된다. 따라서 해당 클래스에 스타일링을 할 때에는 클래스 명을 name으로 호출해야 한다. */
   .name {
     color: red;
   }

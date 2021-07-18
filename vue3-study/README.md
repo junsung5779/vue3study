@@ -286,7 +286,7 @@ CLI를 이용하여 설치를 진행해보자.
       }
       return {
         name,
-        // 1-3. setup 함수에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
+        // 1-3. setup 훅 내에서 greeting 함수를 return해줌으로써 template에 접근할 수 있게 된다.
         greeting,
       };
     }
@@ -663,5 +663,183 @@ CLI를 이용하여 설치를 진행해보자.
 
 
 
-### 데이터 바인딩
+### 데이터 바인딩(Data binding)
+
+* 데이터 바인딩 이란 두 데이터 혹은 정보의 소스를 모두 일치시키는 기법이다.
+* 화면에 보이는 데이터와 브라우저 메모리에 있는 데이터를 일치시키는 기법이다.
+* `v-bind:`은  약어로 `:`이다.
+
+ex1) 변수 name에 할당된 값을 input 박스 안의 값과 바인딩시켜보자.
+
+```vue
+<template>
+  <div class="name">
+    {{ name }}
+  </div>
+  <!-- vue.js 에더 data를 input값과 바인딩 하는 방법: v-bind:value="변수명"  -->
+  <input type="text" :value="name">
+  <button
+    class="btn btn-primary"
+    @click="updateName"
+  >
+    Click
+  </button>
+</template>
+
+<script>
+
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const name = ref('junsung')
+    
+    const updateName = () => {
+      name.value = 'junsung1';
+      console.log(name)
+    };
+
+    return {
+      name,
+      updateName,
+    };
+  }
+}
+</script>
+
+<style>
+  .name {
+    color: red;
+  }
+</style>
+```
+
+다음과 같이 변수 name에 할당된 값이 input 박스와 바인딩 되어 있는 것을 확인 할 수 있다.
+
+![1](README.assets/126057494-13230795-09b9-4f52-8600-7abb477956f0.JPG)
+
+그리고 버튼을 클릭 시 updateName함수에 의해 변수 name에 'junsung1'이라는 값이 재할당 되었고 함수 updateName과 변수 name 둘 다 setup 훅 내에서 return되었기 때문에 template 내에서 접근할 수 있게 되었다. 따라서 template 내에 있는 input 박스에 바인딩 된 값도 같이 바뀐것을 확인할 수 있다.
+
+![image-20210718151630567](README.assets/image-20210718151630567.png)
+
+* 바인딩은 value속성뿐만 아니라, 모든속성에 사용가능하다.
+
+  ```vue
+  <template>
+    <div class="name">
+      {{ name }}
+    </div>
+    <!-- 1-3. type속성을 변수 tmp1과 바인딩 시켰다. -->
+    <input :type="tmp1" :value="name">
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      const name = ref('junsung')
+      // 1. 새 변수 tmp1을 선언하고 'number'를 할당시켰다.
+      const tmp1 = ref('number')
+      
+      const updateName = () => {
+        name.value = 'junsung1';
+        // 1-1. 함수 updateName이 실행되면 변수 tmp1에 할당된 값이 'text'로 바뀐다.
+        tmp1.value = 'text'
+      };
+      
+      // 1-2. 변수, 또는 함수를 사용하게 된다면 template 내에서 접근할 수 있도록 return 해주어야 함.
+      return {
+        name,
+        tmp1,
+        updateName,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  서버를 실행시켜보면 초기에 변수 name에 할당되어있는 값은 junsung이고 input 박스의 type속성은(tmp1과 바인딩 되어있고 변수 tmp1이 가지고 있는 값은 'number'이기 때문에) 'number'가 된다. 
+
+  ![image-20210718155232327](README.assets/image-20210718155232327.png)
+
+  그리고 버튼을 클릭 시 updateName함수에 의해 변수 name에 'junsung1'이라는 값이 재할당 되었고 변수 tmp1의 값이 'text'로 재할당 되었다.
+
+  변수 tmp1은 template 내의 input 박스의 type 속성과 바인딩 되어있기 때문에 input 박스의 type속성이 'number'에서 'text'로 변경되었다. 그리고 이에 따라 변수 name에 할당된 값도 input 박스에 보여지게 되었다.
+
+  ![1](README.assets/126058995-7f87d295-132e-4f44-a636-0c82af5151fc.JPG)
+
+  
+
+* 클래스에도 바인딩을 할 수 있다.
+
+  ```vue
+  <template>
+    <!-- 1-3. class와 바인딩 -->
+    <div :class="nameClass">
+      {{ name }}
+    </div>
+  
+    <input :type="tmp1" :value="name">
+    <button
+      class="btn btn-primary"
+      @click="updateName"
+    >
+      Click
+    </button>
+  </template>
+  
+  <script>
+  
+  import { ref } from 'vue';
+  
+  export default {
+    setup() {
+      const name = ref('junsung')
+      const tmp1 = ref('number')
+      // 1. class 바인딩 하기
+      // 1-1. class와 바인딩 할 변수 nameClass 선언
+      const nameClass = ref('name')
+      
+      const updateName = () => {
+        name.value = 'junsung1';
+        tmp1.value = 'text'
+      };
+      // 1-2. 변수 nameClass return
+      return {
+        name,
+        tmp1,
+        updateName,
+        nameClass,
+      };
+    }
+  }
+  </script>
+  
+  <style>
+    /* 'name'값을 가지고 있는 변수 nameClass가 클래스에 바인딩이 되어있기 때문에 결국 클래스명은 'name'이 된다. 따라서 해당 클래스에 스타일링을 할 때에는 클래스 명을 name으로 호출해야 한다. */
+    .name {
+      color: red;
+    }
+  </style>
+  ```
+
+  변수 nameClass에 할당된 값을 'name'이 아닌 다른 값으로 변경하게 된다면 클래스명을 'name'으로 호출하고 있는 스타일링이 적용되지 않는다.
+
+  ​	ex) const nameClass = ref('aaa')
+
+  ![image-20210718165111897](README.assets/image-20210718165111897.png)
 
